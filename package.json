@@ -4,10 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@discordjs/opus": "^0.3.3",
     "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "dotenv-expand": "^5.1.0",
-    "env-cmd": "^10.1.0"
+    "env-cmd": "^10.1.0",
+    "ffmpeg": "^0.0.4",
+    "ffmpeg-static": "^4.2.7",
+    "fluent-ffmpeg": "^2.1.2",
+    "ytdl-core": "^4.0.4"
   },
   "scripts": {
     "start:dev": "env-cmd -f .env nodemon index.js",
