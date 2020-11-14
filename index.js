@@ -84,7 +84,7 @@ client.on("message", (message) => {
     switch (command) {
         case 'marco':
             const timeTaken = Date.now() - message.createdTimestamp;
-            message.channel.send(`POLO ! Latency : \`${timeTaken / 10}ms\``);
+            message.channel.send(`POLO ! Latency : \`${timeTaken}ms\``);
             break;
         case 'clear':
             message.channel.bulkDelete((parseInt(args[0], 10) + 1) || 100);
