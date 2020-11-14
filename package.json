@@ -1,0 +1,19 @@
+{
+  "name": "redbot",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.4.1",
+    "dotenv": "^8.2.0",
+    "dotenv-expand": "^5.1.0",
+    "env-cmd": "^10.1.0"
+  },
+  "scripts": {
+    "start:dev": "env-cmd -f .env nodemon index.js",
+    "start": "env-cmd -f .env node index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
