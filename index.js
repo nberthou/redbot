@@ -31,6 +31,11 @@ client.manager = new Manager({
     console.log(`Node ${node.options.identifier} had an error : ${err.message}`)
   )
   .on("trackStart", (player, track) => {
+    const vc = client.channels.cache.get(player.voiceChannel);
+    if (vc.members.size < 2) {
+      player.destroy();
+      return client.channels.cache.get(player.textChannel).send(`Player has been disconnected.`)
+    }
     client.channels.cache
       .get(player.textChannel)
       .send(`Now playing: ${track.title}`);
@@ -144,6 +149,9 @@ const play = async (message, args) => {
         if (!player.playing && !player.paused && !player.queue.size) {
           player.play()
         }
+
+        console.debug('index l.148 message.member.voice', channel.members.size);
+        
         return message.channel.send(`Enqueuing \`${track.title}\``)
     }
 }
