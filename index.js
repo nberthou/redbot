@@ -32,7 +32,7 @@ client.manager = new Manager({
   )
   .on("trackStart", (player, track) => {
     const vc = client.channels.cache.get(player.voiceChannel);
-    const embed = new MessageEmbed().setTitle('Now playing').setColor('#ff4747').setImage(track.thumbnail).addField(track.author, `[${track.title}](${track.uri})`);
+    const embed = new MessageEmbed().setTitle('Now playing').setColor('#ff4747').addField(track.author, `[${track.title}](${track.uri})`);
     if (track.requester) {
       embed.setFooter(`Requested by ${track.requester.username}`)
     }
