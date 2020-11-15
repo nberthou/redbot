@@ -9,9 +9,12 @@
     "dotenv": "^8.2.0",
     "dotenv-expand": "^5.1.0",
     "env-cmd": "^10.1.0",
+    "erela.js": "^2.2.0",
+    "erela.js-spotify": "^1.2.0",
     "ffmpeg": "^0.0.4",
     "ffmpeg-static": "^4.2.7",
     "fluent-ffmpeg": "^2.1.2",
+    "lodash": "^4.17.20",
     "ytdl-core": "^4.0.4",
     "ytpl": "^1.0.1"
   },
