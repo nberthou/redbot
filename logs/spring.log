@@ -3468,3 +3468,5 @@ Caused by: java.net.SocketException: Operation not permitted
 2020-11-15 16:37:43.143  INFO 3767 --- [XNIO-1 I/O-2] lavalink.server.io.SocketContext         : Shutting down 2 playing players.
 2020-11-15 16:37:44.733  INFO 3767 --- [XNIO-1 task-51] l.server.io.HandshakeInterceptorImpl     : Incoming connection from /127.0.0.1:55893
 2020-11-15 16:37:44.736  INFO 3767 --- [XNIO-1 task-51] lavalink.server.io.SocketServer          : Connection successfully established from /127.0.0.1:55893
+2020-11-15 16:41:20.495  INFO 3767 --- [XNIO-1 I/O-9] lavalink.server.io.SocketServer          : Connection closed from /127.0.0.1:55893 -- CloseStatus[code=1006, reason=]
+2020-11-15 16:41:20.495  INFO 3767 --- [XNIO-1 I/O-9] lavalink.server.io.SocketContext         : Shutting down 0 playing players.
