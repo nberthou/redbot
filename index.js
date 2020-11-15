@@ -8,8 +8,9 @@ const prefix = process.env.DISCORD_BOT_PREFIX;
 
 client.manager = new Manager({
   nodes: [{
-    host: 'localhost',
-    port: parseInt(process.env.PORT, 10) || 2333,
+    host: 'heroku-lavalink-test.herokuapp.com',
+    port: 80,
+    password: 'youshallnotpass',
     retryDelay: 5000
   }], autoPlay: true,
   plugins: [
