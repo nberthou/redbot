@@ -9,7 +9,7 @@ const prefix = process.env.DISCORD_BOT_PREFIX;
 client.manager = new Manager({
   nodes: [{
     host: 'localhost',
-    port: process.env.PORT || 2333,
+    port: parseInt(process.env.PORT, 10) || 2333,
     retryDelay: 5000
   }], autoPlay: true,
   plugins: [
