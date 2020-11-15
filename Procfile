@@ -1,1 +1,1 @@
-worker: java -jar ./utils/Lavalink.jar && npm run start
+worker: npm run start
