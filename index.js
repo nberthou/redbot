@@ -32,13 +32,17 @@ client.manager = new Manager({
   )
   .on("trackStart", (player, track) => {
     const vc = client.channels.cache.get(player.voiceChannel);
+    const embed = new MessageEmbed().setTitle('Now playing').setColor('#ff4747').setImage(track.thumbnail).addField(track.author, `[${track.title}](${track.uri})`);
+    if (track.requester) {
+      embed.setFooter(`Requested by ${track.requester.username}`)
+    }
     if (vc.members.size < 2) {
       player.destroy();
       return client.channels.cache.get(player.textChannel).send(`Player has been disconnected.`)
     }
     client.channels.cache
       .get(player.textChannel)
-      .send(`Now playing: ${track.title}`);
+      .send(embed);
   })
   .on("queueEnd", (player) => {
     client.channels.cache.get(player.textChannel).send("Queue has ended.");
@@ -102,7 +106,7 @@ const play = async (message, args) => {
         if (!player.playing && !player.paused && !player.queue.size) {
           player.play();
         }
-        return message.channel.send(`Enqueuing: **${res.tracks[0].title}**`);
+        return message.channel.send(`Adding to queue: **${res.tracks[0].title}**`);
       case 'PLAYLIST_LOADED':
         if (args[0] === '-r') {
           player.queue.add(shuffle(res.tracks)) 
@@ -112,7 +116,7 @@ const play = async (message, args) => {
         if (!player.playing && !player.paused && player.queue.totalSize === res.tracks.length) {
           player.play();
         }
-        return message.channel.send(`Enqueuing playlist \`${res.playlist.name}\` with ${res.tracks.length} songs.`);
+        return message.channel.send(`Adding to queue playlist \`${res.playlist.name}\` with ${res.tracks.length} songs.`);
       case 'SEARCH_RESULT':
         let max = 5;
         let collected;
@@ -152,7 +156,7 @@ const play = async (message, args) => {
 
         console.debug('index l.148 message.member.voice', channel.members.size);
         
-        return message.channel.send(`Enqueuing \`${track.title}\``)
+        return message.channel.send(`Adding to queue \`${track.title}\``)
     }
 }
 
