@@ -16,8 +16,8 @@
     "ytpl": "^1.0.1"
   },
   "scripts": {
-    "start:dev": "env-cmd -f .env nodemon index.js",
-    "start": "node index.js"
+    "start:dev": "(java -jar ./utils/Lavalink.jar &) && env-cmd -f .env nodemon index.js",
+    "start": "(java -jar ./utils/Lavalink.jar &) && node index.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
