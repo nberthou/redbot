@@ -3,9 +3,14 @@ const { Manager } = require("erela.js");
 const Spotify = require("erela.js-spotify");
 const { shuffle, clone } = require('lodash');
 
+const http = require('http');
+
 const client = new Client();
 const prefix = process.env.DISCORD_BOT_PREFIX;
 
+http.createServer((req, res) => {
+
+  
 client.manager = new Manager({
   nodes: [{
     host: process.env.LAVALINK_SERVER_LINK,
@@ -305,3 +310,6 @@ client.once("ready", () => {
   client.user.setActivity({ name: "up and running" });
   client.manager.init(client.user.id);
 });
+
+
+}).listen(8080)

@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
+  "engines": {
+    "node": "12.9.0"
+  },
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "discord.js": "^12.4.1",
@@ -20,9 +23,10 @@
   },
   "scripts": {
     "start:dev": "env-cmd -f .env nodemon index.js",
-    "start": "node index.js"
+    "start": "env-cmd -f .env node index.js"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "nodemon": "^2.0.6",
+    "node-pre-gyp": "0.12.0"
   }
 }
