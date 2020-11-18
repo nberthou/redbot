@@ -3,18 +3,13 @@ const { Manager } = require("erela.js");
 const Spotify = require("erela.js-spotify");
 const { shuffle, clone } = require('lodash');
 
-const http = require('http');
-
 const client = new Client();
 const prefix = process.env.DISCORD_BOT_PREFIX;
 
-http.createServer((req, res) => {
-
-  
 client.manager = new Manager({
   nodes: [{
     host: process.env.LAVALINK_SERVER_LINK,
-    port: 80,
+    port: 2333,
     password: process.env.LAVALINK_SERVER_PASSWORD,
     retryDelay: 5000
   }], autoPlay: true,
@@ -158,8 +153,6 @@ const play = async (message, args) => {
         if (!player.playing && !player.paused && !player.queue.size) {
           player.play()
         }
-
-        console.debug('index l.148 message.member.voice', channel.members.size);
         
         return message.channel.send(`Adding to queue \`${track.title}\``)
     }
@@ -245,7 +238,7 @@ const queue = (message, args) => {
   return message.channel.send(embed);
 }
 
-const nowPlaying = (message, args) => {
+const nowPlaying = message => {
   const player = message.client.manager.get(message.guild.id);
   if (!player) {
     return message.channel.send('There is no player found on this server.')
@@ -263,7 +256,28 @@ const nowPlaying = (message, args) => {
     }
     return message.channel.send(embed);
   }
+}
 
+const pause = message => {
+  const player = message.client.manager.get(message.guild.id);
+  if (!player) {
+    return message.channel.send('There is no player found on this server.');
+  }
+
+  const { channel } = message.member.voice;
+
+  if (!channel) {
+    return message.channel.send('You need to join a voice channel');
+  }
+  if (channel.id !== player.voiceChannel) {
+    return message.channel.send('You\'re not in the same voice channel.')
+  }
+  if (player.paused) {
+    return message.channel.send('The player is already paused.')
+  }
+
+  player.pause(true);
+  return message.channel.send('The player has been paused.')
 }
 
 client.on("message", (message) => {
@@ -301,6 +315,10 @@ client.on("message", (message) => {
     case 'nowplaying':
     case 'np':
       nowPlaying(message);
+      break;
+    case 'pause':
+    case 'pp':
+
   }
 });
 
@@ -310,6 +328,3 @@ client.once("ready", () => {
   client.user.setActivity({ name: "up and running" });
   client.manager.init(client.user.id);
 });
-
-
-}).listen(8080)
