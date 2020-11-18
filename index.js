@@ -318,7 +318,7 @@ client.on("message", (message) => {
       break;
     case 'pause':
     case 'pp':
-
+    pause(message);
   }
 });
 
