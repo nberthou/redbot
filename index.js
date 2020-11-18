@@ -58,17 +58,36 @@ const play = async (message, args) => {
   if (!channel) {
     return message.channel.send('You need to join a voice channel !');
   }
-  if (!args.length) {
-    return message.channel.send('You need to give an URL or a search term');
-  }
 
+  
   const player = message.client.manager.create({
     guild: message.guild.id,
     voiceChannel: channel.id,
     textChannel: message.channel.id,
   });
 
-  if (player.state !== 'CONNECTED') {
+
+  if (!args.length) {
+    if (!player) {
+      return message.channel.send('There is no player found on this server.')
+    }
+
+    if (!channel) {
+      return message.channel.send('You need to join a voice channel');
+    }
+    if (channel.id !==  player.voiceChannel) {
+      return message.channel.send('You\'re not in the same voice channel');
+    }
+    if (!player.paused) {
+      return message.channel.send('You need to give an URL or a search term');
+    }
+
+    player.pause(false);
+    return message.channel.send('Resumed the player.');
+    
+  }
+
+  if (player.state !== 'CONNECTED' && args.length > 0) {
     player.connect();
   }
 
@@ -321,7 +340,8 @@ client.on("message", (message) => {
       break;
     case 'pause':
     case 'pp':
-    pause(message);
+      pause(message);
+      break;
   }
 });
 
