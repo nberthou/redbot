@@ -250,7 +250,10 @@ const nowPlaying = message => {
   if (!current) {
     return message.channel.send('No song playing.');
   } else {
-    embed.addField(current.author,`[${current.title}](${current.uri})`).setImage(current.thumbnail).addField('Next song :', `[${player.queue[0].title}](${player.queue[0].uri})`)
+    embed.addField(current.author,`[${current.title}](${current.uri})`).setImage(current.thumbnail)
+    if (player.queue[0]) {
+      embed.addField('Next song :', `[${player.queue[0].title}](${player.queue[0].uri})`)
+    }
     if (current.requester) {
       embed.setFooter(`Requested by ${current.requester.username}`);
     }
