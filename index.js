@@ -46,8 +46,6 @@ client.manager = new Manager({
   })
   .on("queueEnd", (player) => {
     client.channels.cache.get(player.textChannel).send("Queue has ended.");
-
-    player.destroy();
   });
 
 client.on("raw", (d) => client.manager.updateVoiceState(d));
@@ -219,6 +217,7 @@ const stop = message => {
     return message.channel.send("You are not in the same voice channel.")
   }
 
+  player.destroy();
   return message.channel.send("Player disconnected.");
 }
 
