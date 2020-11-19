@@ -46,8 +46,6 @@ client.manager = new Manager({
   })
   .on("queueEnd", (player) => {
     client.channels.cache.get(player.textChannel).send("Queue has ended.");
-
-    player.destroy();
   });
 
 client.on("raw", (d) => client.manager.updateVoiceState(d));
