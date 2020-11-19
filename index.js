@@ -219,7 +219,6 @@ const stop = message => {
     return message.channel.send("You are not in the same voice channel.")
   }
 
-  player.destroy();
   return message.channel.send("Player disconnected.");
 }
 
