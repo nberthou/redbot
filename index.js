@@ -46,6 +46,8 @@ client.manager = new Manager({
   })
   .on("queueEnd", (player) => {
     client.channels.cache.get(player.textChannel).send("Queue has ended.");
+
+    player.destroy();
   });
 
 client.on("raw", (d) => client.manager.updateVoiceState(d));
@@ -300,6 +302,23 @@ const pause = message => {
   return message.channel.send('The player has been paused.')
 }
 
+const help = message => {
+  const embed = new MessageEmbed().setTitle('Commands for the Redbot').setColor('#ff4747')
+  .addField('Music', `
+    - **!p** or **!play** [Search term or Youtube / Spotify URL]: If followed by a link, plays music from link. If followed by search term, search a video. Else, resumes the paused music.
+    - **!sk** or **!skip** : Skips the current song.
+    - **!st** or **!stop** : Stops the queue.
+    - **!pp** or **!pause** : Pauses the current song.
+    - **!np** or **!nowplaying** : Displays informations about the current song.
+    - **!q** or **!queue** : Displays the current queue.
+    `).addField('Misc.', `
+    - **!clear** or **!cl** : Clear the last 100 messages (if they are younger than 14 days)
+    - **!marco** : Answers "POLO !".
+    `)
+
+  return message.channel.send(embed);
+}
+
 client.on("message", (message) => {
   if (message.author.bot) return;
   if (!message.content.startsWith(prefix)) return;
@@ -314,6 +333,7 @@ client.on("message", (message) => {
       message.channel.send(`POLO ! Latency : \`${timeTaken}ms\``);
       break;
     case "clear":
+    case 'cl':
       message.channel.bulkDelete(parseInt(args[0], 10) + 1 || 100);
       break;
     case "play":
@@ -340,6 +360,9 @@ client.on("message", (message) => {
     case 'pp':
       pause(message);
       break;
+    case 'help':
+    case 'h':
+      help(message);
   }
 });
 
