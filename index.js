@@ -96,6 +96,10 @@ const play = async (message, args) => {
     const search = cloneArgs.join(' ');
     let res;
 
+    if( channel.id !==  player.voiceChannel) {
+      player.connect();
+    }
+
     try {
       if (search.includes('open.spotify')) {
         res = await player.search(search);
