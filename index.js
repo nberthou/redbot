@@ -371,6 +371,6 @@ client.on("message", (message) => {
 client.login(process.env.DISCORD_BOT_TOKEN);
 
 client.once("ready", () => {
-  client.user.setActivity({ name: "up and running" });
+  client.user.setActivity("Azgold", {type: "STREAMING", url: "https://twitch.tv/azgold"});
   client.manager.init(client.user.id);
 });
