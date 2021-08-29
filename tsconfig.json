@@ -1,0 +1,45 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "dist",
+        "rootDir": "src",
+        "strict": true,
+        "moduleResolution": "node",
+        "removeComments": false,
+        "alwaysStrict": true,
+        "pretty": true,
+        "target": "es2019",
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+        "sourceMap": true,
+        "inlineSources": true,
+        "module": "commonjs",
+        "declaration": true,
+        "declarationMap": true,
+        "incremental": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "paths": {
+            "@discordjs/voice": [
+                "./node_modules/@discordjs/voice,"
+            ],
+            "@discordjs/opus": [
+                "./node_modules/@discordjs/opus"
+            ],
+            "sodium": [
+                "./node_modules/sodium"
+            ],
+            "libsodium-wrappers": [
+                "./node_modules/libsodium-wrappers"
+            ],
+            "tweetnacl": [
+                "./node_modules/tweetnacl"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+}
