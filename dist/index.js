@@ -22,6 +22,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const discord_js_1 = require("discord.js");
+const lodash_1 = require("lodash");
 const track_1 = require("./track");
 const subscription_1 = require("./subscription");
 const voice_1 = require("@discordjs/voice");
@@ -38,22 +39,25 @@ client.once("disconnect", () => {
     console.log("Disconnect!");
 });
 client.on('messageCreate', async (msg) => {
-    var _a, _b, _c, _d;
     if (!msg.guild)
         return;
-    if (!((_a = client.application) === null || _a === void 0 ? void 0 : _a.owner))
-        await ((_b = client.application) === null || _b === void 0 ? void 0 : _b.fetch());
-    if (msg.content.toLowerCase() === '!start' && msg.author.id === ((_d = (_c = client.application) === null || _c === void 0 ? void 0 : _c.owner) === null || _d === void 0 ? void 0 : _d.id)) {
+    if (msg.content.toLowerCase() === '!start') {
         await msg.guild.commands.set([
             {
                 name: 'play',
-                description: 'Plays a song',
+                description: 'Plays a song or a playlist',
                 options: [
                     {
-                        name: 'song',
+                        name: 'url',
                         type: 'STRING',
-                        description: 'The URL of the song to play',
+                        description: 'The URL of the song or the playlist to play',
                         required: true,
+                    },
+                    {
+                        name: 'shuffle',
+                        type: 'BOOLEAN',
+                        description: 'Shuffles the playlist',
+                        required: false,
                     }
                 ]
             },
@@ -83,13 +87,14 @@ client.on('messageCreate', async (msg) => {
 });
 const subscriptions = new Map();
 client.on('interactionCreate', async (interaction) => {
+    var _a, _b;
     if (!interaction.isCommand() || !interaction.guildId)
         return;
     let subscription = subscriptions.get(interaction.guildId);
     switch (interaction.commandName) {
         case 'play':
             await interaction.deferReply();
-            const url = interaction.options.get('song').value;
+            const url = interaction.options.get('url').value;
             if (!subscription) {
                 if (interaction.member instanceof discord_js_1.GuildMember && interaction.member.voice.channel) {
                     const channel = interaction.member.voice.channel;
@@ -127,8 +132,26 @@ client.on('interactionCreate', async (interaction) => {
                         interaction.followUp({ content: `Error: ${error.message}`, ephemeral: true }).catch(console.warn);
                     }
                 });
-                subscription.enqueue(track);
-                await interaction.followUp(`Enqueued **${track.title}**`);
+                if (Array.isArray(track)) {
+                    const isShuffled = (_b = (_a = interaction.options.get('shuffle')) === null || _a === void 0 ? void 0 : _a.value) !== null && _b !== void 0 ? _b : false;
+                    if (isShuffled) {
+                        const shuffledTracks = lodash_1.shuffle(track);
+                        shuffledTracks.map(t => {
+                            subscription === null || subscription === void 0 ? void 0 : subscription.enqueue(t);
+                        });
+                        console.log('subscription', subscription);
+                    }
+                    else {
+                        track.map(t => {
+                            subscription === null || subscription === void 0 ? void 0 : subscription.enqueue(t);
+                        });
+                    }
+                    await interaction.followUp(`Enqueued **${track.length}** titles`);
+                }
+                else {
+                    subscription.enqueue(track);
+                    await interaction.followUp(`Enqueued **${track.title}**`);
+                }
             }
             catch (error) {
                 console.warn(error);
@@ -148,7 +171,7 @@ client.on('interactionCreate', async (interaction) => {
         case 'queue':
             if (subscription) {
                 const current = subscription.audioPlayer.state.status === voice_1.AudioPlayerStatus.Idle ? 'Nothing is playing.' : `Playing **${subscription.audioPlayer.state.resource.metadata.title}**`;
-                const queue = subscription.queue.slice(0, 5).map((track, index) => `${index + 1}) ${track.title}`).join('\n');
+                const queue = subscription.queue.slice(0, 20).map((track, index) => `${index + 1}) ${track.title}`).join('\n');
                 await interaction.reply(`${current}\n\n${queue}`);
             }
             else {
@@ -193,6 +216,5 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 client.on('error', console.warn);
-console.log('token', token);
 void client.login(token);
 //# sourceMappingURL=index.js.map

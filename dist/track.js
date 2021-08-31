@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Track = void 0;
 const ytdl_core_1 = require("ytdl-core");
+const ytpl_1 = __importDefault(require("ytpl"));
 const voice_1 = require("@discordjs/voice");
 const youtube_dl_exec_1 = require("youtube-dl-exec");
 const noop = () => { };
@@ -48,6 +52,33 @@ class Track {
      * @returns The created Track
      */
     static async from(url, methods) {
+        if (url.includes('list=')) {
+            const wrappedMethods = {
+                onStart() {
+                    wrappedMethods.onStart = noop;
+                    methods.onStart();
+                },
+                onFinish() {
+                    wrappedMethods.onFinish = noop;
+                    methods.onFinish();
+                },
+                onError(error) {
+                    wrappedMethods.onError = noop;
+                    methods.onError(error);
+                },
+            };
+            const songs = await ytpl_1.default(url, { pages: Infinity }).then(res => {
+                return res.items.map(r => {
+                    return new Track({
+                        title: r.title,
+                        url: r.url,
+                        ...wrappedMethods
+                    });
+                });
+            });
+            console.log('songs', songs);
+            return songs;
+        }
         const info = await ytdl_core_1.getInfo(url);
         const wrappedMethods = {
             onStart() {

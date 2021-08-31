@@ -1,4 +1,5 @@
 import { getInfo } from 'ytdl-core';
+import ytpl from 'ytpl';
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
 import { raw as ytdl } from 'youtube-dl-exec';
 
@@ -65,7 +66,34 @@ export class Track implements TrackData {
      * @param methods Lifecycle callbacks
      * @returns The created Track
      */
-    public static async from(url: string, methods: Pick<Track, 'onStart' | 'onFinish' | 'onError'>): Promise<Track> {
+    public static async from(url: string, methods: Pick<Track, 'onStart' | 'onFinish' | 'onError'>): Promise<Track | Track[]> {
+        if (url.includes('list=')) {
+            const wrappedMethods = {
+                onStart() {
+                    wrappedMethods.onStart = noop;
+                    methods.onStart();
+                },
+                onFinish() {
+                    wrappedMethods.onFinish = noop;
+                    methods.onFinish();
+                },
+                onError(error: Error) {
+                    wrappedMethods.onError = noop;
+                    methods.onError(error);
+                },
+            };
+            const songs = await ytpl(url, { pages: Infinity }).then(res => {
+                return res.items.map(r => {
+                    return new Track({
+                        title: r.title,
+                        url: r.url,
+                        ...wrappedMethods
+                    })
+                })
+            });
+            console.log('songs', songs)
+            return songs;
+        }
         const info = await getInfo(url);
         const wrappedMethods = {
             onStart() {
