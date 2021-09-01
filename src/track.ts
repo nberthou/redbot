@@ -2,6 +2,7 @@ import { getInfo } from 'ytdl-core';
 import ytpl from 'ytpl';
 import { AudioResource, createAudioResource, demuxProbe } from '@discordjs/voice';
 import { raw as ytdl } from 'youtube-dl-exec';
+import { shuffle } from 'lodash';
 
 export interface TrackData {
     url: string;
@@ -66,7 +67,7 @@ export class Track implements TrackData {
      * @param methods Lifecycle callbacks
      * @returns The created Track
      */
-    public static async from(url: string, methods: Pick<Track, 'onStart' | 'onFinish' | 'onError'>): Promise<Track | Track[]> {
+    public static async from(url: string, isShuffled: boolean, methods: Pick<Track, 'onStart' | 'onFinish' | 'onError'>): Promise<Track | Track[]> {
         if (url.includes('list=')) {
             const wrappedMethods = {
                 onStart() {
@@ -83,15 +84,23 @@ export class Track implements TrackData {
                 },
             };
             const songs = await ytpl(url, { pages: Infinity }).then(res => {
+                if (isShuffled) {
+                    return shuffle(res.items.map(r => {
+                        return new Track({
+                            title: r.title,
+                            url: r.url.split('&list=')[0],
+                            ...wrappedMethods
+                        })
+                    }))
+                }
                 return res.items.map(r => {
                     return new Track({
                         title: r.title,
-                        url: r.url,
+                        url: r.url.split('&list=')[0],
                         ...wrappedMethods
                     })
                 })
             });
-            console.log('songs', songs)
             return songs;
         }
         const info = await getInfo(url);

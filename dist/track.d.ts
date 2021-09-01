@@ -21,6 +21,6 @@ export declare class Track implements TrackData {
      * @param methods Lifecycle callbacks
      * @returns The created Track
      */
-    static from(url: string, methods: Pick<Track, 'onStart' | 'onFinish' | 'onError'>): Promise<Track | Track[]>;
+    static from(url: string, isShuffled: boolean, methods: Pick<Track, 'onStart' | 'onFinish' | 'onError'>): Promise<Track | Track[]>;
 }
 //# sourceMappingURL=track.d.ts.map

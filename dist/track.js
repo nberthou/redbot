@@ -8,6 +8,7 @@ const ytdl_core_1 = require("ytdl-core");
 const ytpl_1 = __importDefault(require("ytpl"));
 const voice_1 = require("@discordjs/voice");
 const youtube_dl_exec_1 = require("youtube-dl-exec");
+const lodash_1 = require("lodash");
 const noop = () => { };
 class Track {
     constructor({ url, title, onStart, onFinish, onError }) {
@@ -51,7 +52,7 @@ class Track {
      * @param methods Lifecycle callbacks
      * @returns The created Track
      */
-    static async from(url, methods) {
+    static async from(url, isShuffled, methods) {
         if (url.includes('list=')) {
             const wrappedMethods = {
                 onStart() {
@@ -68,15 +69,23 @@ class Track {
                 },
             };
             const songs = await ytpl_1.default(url, { pages: Infinity }).then(res => {
+                if (isShuffled) {
+                    return lodash_1.shuffle(res.items.map(r => {
+                        return new Track({
+                            title: r.title,
+                            url: r.url.split('&list=')[0],
+                            ...wrappedMethods
+                        });
+                    }));
+                }
                 return res.items.map(r => {
                     return new Track({
                         title: r.title,
-                        url: r.url,
+                        url: r.url.split('&list=')[0],
                         ...wrappedMethods
                     });
                 });
             });
-            console.log('songs', songs);
             return songs;
         }
         const info = await ytdl_core_1.getInfo(url);

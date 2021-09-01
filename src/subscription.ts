@@ -55,9 +55,11 @@ export class MusicSubscription {
 
 		this.audioPlayer.on('stateChange', (oldState, newState) => {
 			if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
+				console.log('(oldState.resource as AudioResource<Track>)', (oldState.resource as AudioResource<Track>).metadata.title);
 				(oldState.resource as AudioResource<Track>).metadata.onFinish();
 				void this.processQueue();
 			} else if (newState.status === AudioPlayerStatus.Playing) {
+				console.log('(newState.resource as AudioResource<Track>)', (newState.resource as AudioResource<Track>).metadata.title);
 				(newState.resource as AudioResource<Track>).metadata.onStart();
 			}
 		});
@@ -88,6 +90,8 @@ export class MusicSubscription {
 		}
 		this.queueLock = true;
 		const nextTrack = this.queue.shift()!;
+		console.log('nextTrack', nextTrack.title, nextTrack.url);
+		console.log('queue', this.queue);
 		try {
 			const resource = await nextTrack.createAudioResource();
 			this.audioPlayer.play(resource);

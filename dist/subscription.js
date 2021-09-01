@@ -48,10 +48,12 @@ class MusicSubscription {
         });
         this.audioPlayer.on('stateChange', (oldState, newState) => {
             if (newState.status === voice_1.AudioPlayerStatus.Idle && oldState.status !== voice_1.AudioPlayerStatus.Idle) {
+                console.log('(oldState.resource as AudioResource<Track>)', oldState.resource.metadata.title);
                 oldState.resource.metadata.onFinish();
                 void this.processQueue();
             }
             else if (newState.status === voice_1.AudioPlayerStatus.Playing) {
+                console.log('(newState.resource as AudioResource<Track>)', newState.resource.metadata.title);
                 newState.resource.metadata.onStart();
             }
         });
@@ -78,6 +80,8 @@ class MusicSubscription {
         }
         this.queueLock = true;
         const nextTrack = this.queue.shift();
+        console.log('nextTrack', nextTrack.title, nextTrack.url);
+        console.log('queue', this.queue);
         try {
             const resource = await nextTrack.createAudioResource();
             this.audioPlayer.play(resource);

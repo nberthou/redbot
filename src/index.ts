@@ -107,9 +107,9 @@ client.on('interactionCreate', async (interaction: Interaction) => {
                 await interaction.followUp('Failed to join voice channel, please try again.');
                 return;
             }
-
+            const isShuffled = interaction.options.get('shuffle')?.value! as boolean ?? false;
             try {
-                const track = await Track.from(url, {
+                const track = await Track.from(url, isShuffled, {
                     onStart() {
                         interaction.followUp({ content: 'Now playing', ephemeral: true }).catch(console.warn);
                     },
@@ -122,13 +122,11 @@ client.on('interactionCreate', async (interaction: Interaction) => {
                     }
                 });
                 if (Array.isArray(track)) {
-                    const isShuffled = interaction.options.get('shuffle')?.value! ?? false;
                     if (isShuffled) {
                         const shuffledTracks: Track[] = shuffle(track);
                         shuffledTracks.map(t => {
                             subscription?.enqueue(t)
                         })
-                        console.log('subscription', subscription)
                     } else {
                         track.map(t => {
                             subscription?.enqueue(t);
@@ -146,6 +144,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
             break;
         case 'skip':
             if (subscription) {
+                console.log('subscription.queue', queue);
                 subscription.audioPlayer.stop();
                 await interaction.reply('Skipped song');
             } else {
